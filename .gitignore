@@ -363,6 +363,6 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # VS Code solution and project files cache
-.sln
-.vcxproj
-.vcxproj.filters
+*.sln
+*.vcxproj
+*.vcxproj.filters
