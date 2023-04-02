@@ -6,6 +6,7 @@
 #include <thread>
 #include <future>
 #include <regex>
+#include <map>
 
 namespace fs = std::filesystem;
 
@@ -100,6 +101,61 @@ std::pair<std::vector<std::tuple<std::thread::id, std::string, int, std::string>
 	return std::make_pair(results, files_to_search.size());
 }
 
+
+/**
+ * Writes the results to a file in the specified format.
+ * The results are a vector of tuples, each containing a thread ID, a file path, a line number,
+ * and the content of the line.
+ *
+ * @param output_filename The name of the output file to write to.
+ * @param results A vector of tuples containing the results to write to the file.
+ */
+void writeResultsToFile(const std::string& output_filename, const std::vector<std::tuple<std::thread::id, std::string, int, std::string>>& results) {
+	// Map to store the file patterns (line numbers and content) for each file.
+	std::map<std::string, std::vector<std::tuple<int, std::string>>> file_patterns_map;
+
+	// Populate the map with file patterns.
+	for (const auto& result : results) {
+		// Extract the relevant values from the tuple.
+		const auto& [thread_id, file_path, line_number, line_content] = result;
+
+		// Check that the values are not empty or zero.
+		if (!file_path.empty() && line_number && !line_content.empty()) {
+			// Add the line number and content to the vector for this file path.
+			file_patterns_map[file_path].push_back({ line_number, line_content });
+		}
+	}
+
+	// Sort the patterns for each file by line number.
+	for (auto& [file_path, patterns] : file_patterns_map) {
+		std::sort(patterns.begin(), patterns.end(), [](const auto& lhs, const auto& rhs) {
+			return std::get<0>(lhs) < std::get<0>(rhs);
+			});
+	}
+
+	// Sort the files by number of patterns.
+	std::vector<std::pair<std::string, std::vector<std::tuple<int, std::string>>>> sorted_files(file_patterns_map.begin(), file_patterns_map.end());
+	std::sort(sorted_files.begin(), sorted_files.end(), [](const auto& lhs, const auto& rhs) {
+		return lhs.second.size() > rhs.second.size();
+		});
+
+	// Write the sorted patterns to the output file.
+	std::ofstream output_file(output_filename + ".txt");
+	if (!output_file.is_open()) {
+		std::cerr << "Could not open output file" << std::endl;
+		return;
+	}
+
+	// Iterate over each file's patterns and write them to the output file.
+	for (const auto& [file_path, patterns] : sorted_files) {
+		for (const auto& [line_number, line_content] : patterns) {
+			// Write the file path, line number, and content in the specified format.
+			output_file << file_path << ":" << line_number << ": " << line_content << std::endl;
+		}
+	}
+
+	output_file.close();
+}
 
 /**
  * Determines if a given filename is valid, meaning it contains only alphanumeric
@@ -229,5 +285,7 @@ int main(int argc, char* argv[]) {
 	// Search directory for string with specified thread count
 	std::pair<std::vector<std::tuple<std::thread::id, std::string, int, std::string>>, int> results = searchDirectoryForString(search_string, directory_path, thread_cnt);
 
+	// Write results to the file specified by result_filename variable
+	writeResultsToFile(result_filename, std::get<0>(results));
 	// Return success
 	return 0;
