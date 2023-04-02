@@ -6,6 +6,7 @@
 #include <thread>
 #include <future>
 #include <regex>
+#include <set>
 #include <map>
 
 namespace fs = std::filesystem;
@@ -157,6 +158,62 @@ void writeResultsToFile(const std::string& output_filename, const std::vector<st
 	output_file.close();
 }
 
+
+/**
+ * Writes log information to a file.
+ *
+ * @param filename The name of the file to write to.
+ * @param results A vector of tuples containing log information for each thread.
+ */
+void writeLogToFile(const std::string& filename, const std::vector<std::tuple<std::thread::id, std::string, int, std::string>>& results) {
+	// Open the output file for writing.
+	std::ofstream output_file(filename + ".log");
+	if (!output_file.is_open()) {
+		std::cerr << "Unable to open file for writing: " << filename << std::endl;
+		return;
+	}
+
+	// Create a map to store the files associated with each thread.
+	std::map<std::thread::id, std::vector<std::string>> threads_to_files;
+
+	// Populate the map with file names for each thread.
+	for (const auto& result : results) {
+		std::thread::id thread_id = std::get<0>(result);
+		std::string file_name = std::get<1>(result);
+		threads_to_files[thread_id].push_back(file_name);
+	}
+
+	// Convert the map to a vector of pairs.
+	std::vector<std::pair<std::thread::id, std::vector<std::string>>> thread_file_pairs;
+	std::copy(threads_to_files.begin(), threads_to_files.end(), std::back_inserter(thread_file_pairs));
+
+	// Sort the vector of thread-file pairs by the number of files associated with each thread.
+	std::sort(thread_file_pairs.begin(), thread_file_pairs.end(), [](const auto& lhs, const auto& rhs) {
+		if (lhs.second[0] == "" && rhs.second[0] != "") {
+			return false;
+		}
+		else if (lhs.second[0] != "" && rhs.second[0] == "") {
+			return true;
+		}
+		else {
+			return lhs.second.size() > rhs.second.size();
+		}
+		});
+
+	// Write the sorted thread-file pairs to the output file.
+	for (const auto& [thread_id, file_names] : thread_file_pairs) {
+		output_file << thread_id << ":";
+		for (const auto& file_name : file_names) {
+			output_file << file_name << ",";
+		}
+		// Remove the trailing comma and add a newline character.
+		output_file.seekp(-1, std::ios_base::end);
+		output_file << std::endl;
+	}
+
+	// Close the output file.
+	output_file.close();
+}
 /**
  * Determines if a given filename is valid, meaning it contains only alphanumeric
  * characters, hyphens, dots, and spaces.
@@ -287,5 +344,8 @@ int main(int argc, char* argv[]) {
 
 	// Write results to the file specified by result_filename variable
 	writeResultsToFile(result_filename, std::get<0>(results));
+
+	// Write the log file to the file specified by log_filename variable
+	writeLogToFile(log_filename, std::get<0>(results));
 	// Return success
 	return 0;
