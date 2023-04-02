@@ -234,6 +234,12 @@ bool isValidFilename(const std::string& filename) {
 
 
 int main(int argc, char* argv[]) {
+	// Initialize the timer
+	int timer_start, timer_stop;
+
+	// Start the timer
+	timer_start = clock();
+
 	// Extract the filename from the first argument
 	std::string filename = std::filesystem::path(argv[0]).filename().string();
 
@@ -347,5 +353,9 @@ int main(int argc, char* argv[]) {
 
 	// Write the log file to the file specified by log_filename variable
 	writeLogToFile(log_filename, std::get<0>(results));
+
+	// Stop the timer and calculate the elapsed time of the program
+	timer_stop = clock();
+	double elapsed_time_ms = (timer_stop - timer_start) / (double)CLOCKS_PER_SEC * 1000;
 	// Return success
 	return 0;
