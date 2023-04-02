@@ -120,7 +120,114 @@ bool isValidFilename(const std::string& filename) {
 }
 
 
-int main()
-{
+int main(int argc, char* argv[]) {
+	// Extract the filename from the first argument
+	std::string filename = std::filesystem::path(argv[0]).filename().string();
+
+	// If no arguments are given or the number of arguments is invalid, print an error message and exit
+	if (argc == 1) {
+		std::cerr << "Error: wrong usage of the program\n"
+			<< "Usage: " << filename << " <search string> [options]\n"
+			<< "Options:\n"
+			<< "  -d <directory> - directory to search in (default: current directory)\n"
+			<< "  -l <log filename> - log filename (default: <program name>.log)\n"
+			<< "  -r <result filename> - result filename (default: <program name>.txt)\n"
+			<< "  -t <thread count> - number of threads to use (default: 4)\n";
+		return 1;
+	}
+
+	if (!(argc % 2 == 0) || argc > 10) {
+		std::cerr << "Error: wrong number of arguments" << std::endl;
+		return 1;
+	}
+
+	// Set default values for directory path, log filename, result filename, and thread count
+	std::string directory_path = std::filesystem::current_path().string();
+	std::string search_string = argv[1];
+	int additional_options_cnt = (argc - 2) / 2, thread_cnt = 4;
+	bool dir_opt = false, log_filename_opt = false, result_filename_opt = false, thread_cnt_opt = false;
+
+	// Extract the program name from the filename
+	std::size_t last_dot = filename.find_last_of(".");
+	std::string program_name = filename.substr(0, last_dot);
+	std::string log_filename = program_name;
+	std::string result_filename = program_name;
+
+	// Loop through the additional options
+	for (int i = 1; i <= additional_options_cnt; i++) {
+		// If the option is the -d or --dir option, set the directory path
+		if (strcmp(argv[i * 2], "-d") == 0 || strcmp(argv[i * 2], "--dir") == 0) {
+			// Check if the directory option has already been set
+			if (dir_opt == true) {
+				std::cerr << "Error: multiple usage of the starting directory option" << std::endl;
+				return 1;
+			}
+			// Append the directory to the current directory path
+			directory_path = directory_path + "\\" + argv[i * 2 + 1];
+			// Check if the directory exists
+			if (!fs::exists(directory_path)) {
+				std::cerr << "Error: directory does not exist" << std::endl;
+				return 1;
+			}
+			// Set the directory option to true
+			dir_opt = true;
+		}
+		// If the option is the -l or --log_file option, set the log filename
+		else if (strcmp(argv[i * 2], "-l") == 0 || strcmp(argv[i * 2], "--log_file") == 0) {
+			// Check if option already used
+			if (log_filename_opt == true) {
+				std::cerr << "Error: multiple usage of the log filename option" << std::endl;
+				return 1;
+			}
+			// Set log filename and check if valid
+			log_filename = argv[i * 2 + 1];
+			if (!isValidFilename(log_filename)) {
+				std::cerr << "Error: invalid log filename" << std::endl;
+				return 1;
+			}
+			log_filename_opt = true;
+		}
+		// If the option is the -r or --result_file option, set the result filename
+		else if (strcmp(argv[i * 2], "-r") == 0 || strcmp(argv[i * 2], "--result_file") == 0) {
+			// Check if option already used
+			if (result_filename_opt == true) {
+				std::cerr << "Error: multiple usage of the result filename option" << std::endl;
+				return 1;
+			}
+			// Set result filename and check if valid
+			result_filename = argv[i * 2 + 1];
+			if (!isValidFilename(result_filename)) {
+				std::cerr << "Error: invalid result filename" << std::endl;
+				return 1;
+			}
+			result_filename_opt = true;
+		}
+		// If the option is the -t or --threads option, set the threads count
+		else if (strcmp(argv[i * 2], "-t") == 0 || strcmp(argv[i * 2], "--threads") == 0) {
+			// Check if option already used
+			if (thread_cnt_opt == true) {
+				std::cerr << "Error: multiple usage of the thread count option" << std::endl;
+				return 1;
+			}
+			// Set thread count and catch invalid argument
+			try {
+				thread_cnt = std::stoi(argv[i * 2 + 1]);
+			}
+			catch (const std::invalid_argument& e) {
+				std::cerr << "Error: invalid thread count" << std::endl;
+				return 1;
+			}
+			thread_cnt_opt = true;
+		}
+		// If option not recognized, print error message
+		else {
+			std::cerr << "Wrong usage of the additional parameters." << std::endl;
+			return 1;
+		}
+	}
+
+	// Search directory for string with specified thread count
+	std::pair<std::vector<std::tuple<std::thread::id, std::string, int, std::string>>, int> results = searchDirectoryForString(search_string, directory_path, thread_cnt);
+
+	// Return success
 	return 0;
-}
