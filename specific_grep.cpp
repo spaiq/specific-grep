@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <thread>
 #include <future>
+#include <regex>
 
 namespace fs = std::filesystem;
 
@@ -97,6 +98,25 @@ std::pair<std::vector<std::tuple<std::thread::id, std::string, int, std::string>
 
 	// Return a pair containing the search results and the total number of files searched.
 	return std::make_pair(results, files_to_search.size());
+}
+
+
+/**
+ * Determines if a given filename is valid, meaning it contains only alphanumeric
+ * characters, hyphens, dots, and spaces.
+ *
+ * @param filename the filename to validate
+ * @return true if the filename is valid, false otherwise
+ */
+bool isValidFilename(const std::string& filename) {
+	// Define a regular expression pattern to match characters that are not alphanumeric,
+	// hyphens, dots, or spaces.
+	static const std::regex pattern("[^\\w\\-. ]");
+
+	// Use regex_search to check if the filename contains any invalid characters.
+	// If the search returns true, it means the filename is invalid, so return false.
+	// If the search returns false, it means the filename is valid, so return true.
+	return !std::regex_search(filename, pattern);
 }
 
 
