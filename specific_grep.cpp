@@ -46,6 +46,10 @@ std::vector<std::tuple<std::thread::id, std::string, int, std::string>> searchFi
 			std::cerr << "Error: could not open file " << file_path.string() << " due to permission issues." << std::endl;
 		}
 	}
+	// Add entry for thread id storage if there was no file with the string in files subset
+	if (results.empty()) {
+		results.emplace_back(thread_id, "", NULL, "");
+	}
 
 	// Return the vector of search results
 	return results;
