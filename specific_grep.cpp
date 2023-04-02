@@ -214,6 +214,50 @@ void writeLogToFile(const std::string& filename, const std::vector<std::tuple<st
 	// Close the output file.
 	output_file.close();
 }
+
+
+
+/**
+* Print the search results to the console, including the number of searched files,
+* the number of files containing the search pattern, the number of unique pattern occurrences,
+* the name of the result file, the name of the log file, the number of threads used in the search,
+* and the elapsed time.
+*
+* @param results A pair consisting of the search results and the number of searched files.
+* @param thread_count The number of threads used in the search.
+* @param log_filename The name of the log file to be generated.
+* @param result_filename The name of the result file to be generated.
+* @param elapsed_time_ms The elapsed time in milliseconds.
+*/
+void printSearchResults(const std::pair<std::vector<std::tuple<std::thread::id, std::string, int, std::string>>, int>& results, int thread_count, std::string log_filename, std::string result_filename, double elapsed_time_ms) {
+	// Extract search results.
+	std::vector<std::tuple<std::thread::id, std::string, int, std::string>> results_vector = results.first;
+
+	// Print number of searched files.
+	std::cout << "Searched files: " << results.second << std::endl;
+
+	// Count files with pattern and pattern occurrences.
+	std::set<std::string> files_with_pattern;
+	std::set<std::tuple<std::string, int>> pattern_occurrences;
+	for (const auto& result : results_vector) {
+		if (std::get<2>(result) != 0) {
+			files_with_pattern.insert(std::get<1>(result));
+			pattern_occurrences.insert(std::make_tuple(std::get<1>(result), std::get<2>(result)));
+		}
+	}
+
+	// Print number of files with pattern and number of unique pattern occurrences.
+	std::cout << "Files with pattern: " << files_with_pattern.size() << std::endl;
+	std::cout << "Patterns number: " << pattern_occurrences.size() << std::endl;
+
+	// Print name of result file and log file, number of threads used, and elapsed time.
+	std::cout << "Result file: " << result_filename << ".txt" << std::endl;
+	std::cout << "Log file: " << log_filename << ".log" << std::endl;
+	std::cout << "Used threads: " << thread_count << std::endl;
+	std::cout << "Elapsed time: " << elapsed_time_ms << "[ms]" << std::endl;
+}
+
+
 /**
  * Determines if a given filename is valid, meaning it contains only alphanumeric
  * characters, hyphens, dots, and spaces.
@@ -357,5 +401,9 @@ int main(int argc, char* argv[]) {
 	// Stop the timer and calculate the elapsed time of the program
 	timer_stop = clock();
 	double elapsed_time_ms = (timer_stop - timer_start) / (double)CLOCKS_PER_SEC * 1000;
+
+	// Print the results of the program
+	printSearchResults(results, thread_cnt, log_filename, result_filename, round(elapsed_time_ms));
+
 	// Return success
 	return 0;
