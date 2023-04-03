@@ -229,7 +229,7 @@ void writeLogToFile(const std::string& filename, const std::vector<std::tuple<st
 * @param result_filename The name of the result file to be generated.
 * @param elapsed_time_ms The elapsed time in milliseconds.
 */
-void printSearchResults(const std::pair<std::vector<std::tuple<std::thread::id, std::string, int, std::string>>, int>& results, int thread_count, std::string log_filename, std::string result_filename, double elapsed_time_ms) {
+void printSearchResults(const std::pair<std::vector<std::tuple<std::thread::id, std::string, int, std::string>>, int>& results, int thread_count, std::string log_filename, std::string result_filename, int& timer_start) {
 	// Extract search results.
 	std::vector<std::tuple<std::thread::id, std::string, int, std::string>> results_vector = results.first;
 
@@ -254,6 +254,10 @@ void printSearchResults(const std::pair<std::vector<std::tuple<std::thread::id, 
 	std::cout << "Result file: " << result_filename << ".txt" << std::endl;
 	std::cout << "Log file: " << log_filename << ".log" << std::endl;
 	std::cout << "Used threads: " << thread_count << std::endl;
+
+	// Stop the timer and calculate the elapsed time of the program
+	int timer_stop = clock();
+	double elapsed_time_ms = (timer_stop - timer_start) / (double)CLOCKS_PER_SEC * 1000;
 	std::cout << "Elapsed time: " << elapsed_time_ms << "[ms]" << std::endl;
 }
 
@@ -279,7 +283,7 @@ bool isValidFilename(const std::string& filename) {
 
 int main(int argc, char* argv[]) {
 	// Initialize the timer
-	int timer_start, timer_stop;
+	int timer_start;
 
 	// Start the timer
 	timer_start = clock();
@@ -398,12 +402,8 @@ int main(int argc, char* argv[]) {
 	// Write the log file to the file specified by log_filename variable
 	writeLogToFile(log_filename, std::get<0>(results));
 
-	// Stop the timer and calculate the elapsed time of the program
-	timer_stop = clock();
-	double elapsed_time_ms = (timer_stop - timer_start) / (double)CLOCKS_PER_SEC * 1000;
-
 	// Print the results of the program
-	printSearchResults(results, thread_cnt, log_filename, result_filename, round(elapsed_time_ms));
+	printSearchResults(results, thread_cnt, log_filename, result_filename, timer_start);
 
 	// Return success
 	return 0;
