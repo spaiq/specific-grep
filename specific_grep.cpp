@@ -391,6 +391,13 @@ int main(int argc, char* argv[]) {
 				std::cerr << "Error: invalid thread count" << std::endl;
 				return 1;
 			}
+
+			// Check if thread count is valid
+			if (thread_cnt < 1) {
+				std::cerr << "Error: invalid thread count" << std::endl;
+				return 1;
+			}
+
 			thread_cnt_opt = true;
 		}
 		// If option not recognized, print error message
