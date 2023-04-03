@@ -251,9 +251,12 @@ void printSearchResults(const std::pair<std::vector<std::tuple<std::thread::id, 
 	std::cout << "Files with pattern: " << files_with_pattern.size() << std::endl;
 	std::cout << "Patterns number: " << pattern_occurrences.size() << std::endl;
 
+	// Get current directory.
+	std::string cur_directory = fs::current_path().string();
+
 	// Print name of result file and log file, number of threads used, and elapsed time.
-	std::cout << "Result file: " << result_filename << ".txt" << std::endl;
-	std::cout << "Log file: " << log_filename << ".log" << std::endl;
+	std::cout << "Result file: " << cur_directory << "\\" << result_filename << ".txt" << std::endl;
+	std::cout << "Log file: " << cur_directory << "\\" << log_filename << ".log" << std::endl;
 	std::cout << "Used threads: " << thread_count << std::endl;
 
 	// Stop the timer and calculate the elapsed time of the program
