@@ -366,3 +366,4 @@ FodyWeavers.xsd
 *.sln
 *.vcxproj
 *.vcxproj.filters
+CppProperties.json
