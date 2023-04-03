@@ -228,7 +228,7 @@ void writeLogToFile(const std::string& filename, const std::vector<std::tuple<st
 * @param thread_count The number of threads used in the search.
 * @param log_filename The name of the log file to be generated.
 * @param result_filename The name of the result file to be generated.
-* @param elapsed_time_ms The elapsed time in milliseconds.
+* @param timer_start The time at which the search began.
 */
 void printSearchResults(const std::pair<std::vector<std::tuple<std::thread::id, std::string, int, std::string>>, int>& results, int thread_count, std::string log_filename, std::string result_filename, int& timer_start) {
 	// Extract search results.
