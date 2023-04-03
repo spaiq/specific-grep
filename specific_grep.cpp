@@ -333,8 +333,11 @@ int main(int argc, char* argv[]) {
 			directory_path = directory_path + "\\" + argv[i * 2 + 1];
 			// Check if the directory exists
 			if (!fs::exists(directory_path)) {
-				std::cerr << "Error: directory does not exist" << std::endl;
-				return 1;
+				if (!fs::exists(argv[i * 2 + 1])) {
+					std::cerr << "Error: directory does not exist" << std::endl;
+					return 1;
+				}
+				directory_path = argv[i * 2 + 1];
 			}
 			// Set the directory option to true
 			dir_opt = true;
