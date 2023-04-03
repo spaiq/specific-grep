@@ -14,12 +14,12 @@ Replace <pattern> with the pattern you want to search for. If you don't specify 
 ### Parameters
 Specific Grep has four optional parameters that you can use to customize the search:
 -d or --dir: the directory where the program should start looking for files (including subdirectories). Default: current directory.
--l or --log_file: the name of the log file that the program should produce. Default: <program name>.log.
--r or --result_file: the name of the file where the program should write the search results. Default: <program name>.txt.
+-l or --log_file: the name of the log file that the program should produce. Default: \<program name\>.log.
+-r or --result_file: the name of the file where the program should write the search results. Default: \<program name\>.txt.
 -t or --threads: the number of threads that the program should use for searching. Default: 4.
 ### Output Files
 When Specific Grep finishes its work, it produces two output files:
-The result file: <result_file> (default: <program name>.txt). It contains a list of all files where the pattern was found, along with the line number and line content. The list is sorted from the file where the most patterns were found to the one with the least.
-The log file: <log_file> (default: <program name>.log). It contains a list of thread IDs and file names processed, sorted from the thread ID with the most files to the one with the least.
+The result file: \<result_file\> (default: \<program name\>.txt). It contains a list of all files where the pattern was found, along with the line number and line content. The list is sorted from the file where the most patterns were found to the one with the least.
+The log file: \<log_file\> (default: \<program name\>.log). It contains a list of thread IDs and file names processed, sorted from the thread ID with the most files to the one with the least.
 ## License
 Specific Grep is released under the MIT License. See LICENSE file for details.
