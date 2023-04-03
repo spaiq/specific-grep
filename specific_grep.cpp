@@ -293,7 +293,7 @@ int main(int argc, char* argv[]) {
 	timer_start = clock();
 
 	// Extract the filename from the first argument
-	std::string filename = std::filesystem::path(argv[0]).filename().string();
+	std::string filename = fs::path(argv[0]).filename().string();
 
 	// If no arguments are given or the number of arguments is invalid, print an error message and exit
 	if (argc == 1) {
@@ -313,7 +313,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	// Set default values for directory path, log filename, result filename, and thread count
-	std::string directory_path = std::filesystem::current_path().string();
+	std::string directory_path = fs::current_path().string();
 	std::string search_string = argv[1];
 	int additional_options_cnt = (argc - 2) / 2, thread_cnt = 4;
 	bool dir_opt = false, log_filename_opt = false, result_filename_opt = false, thread_cnt_opt = false;
