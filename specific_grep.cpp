@@ -40,7 +40,7 @@ std::vector<std::tuple<std::thread::id, std::string, int, std::string>> searchFi
 				++line_number;
 				if (line.find(search_string) != std::string::npos) {
 					// If the string was found, add the search results to the vector
-					results.emplace_back(thread_id, file_path.string(), line_number, line);
+					results.emplace_back(thread_id, file_path.filename().stem().string(), line_number, line);
 				}
 			}
 			file.close();
@@ -205,7 +205,7 @@ void writeLogToFile(const std::string& filename, const std::vector<std::tuple<st
 	for (const auto& [thread_id, file_names] : thread_file_pairs) {
 		output_file << thread_id << ":";
 		for (const auto& file_name : file_names) {
-			output_file << file_name << ",";
+			output_file << " " << file_name << ",";
 		}
 		// Remove the trailing comma and add a newline character.
 		output_file.seekp(-1, std::ios_base::end);
