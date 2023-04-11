@@ -320,20 +320,37 @@ bool setStartingDirectory(bool& dir_opt, std::string& directory_path, char* argv
 
 	return true;
 		}
-		// If the option is the -l or --log_file option, set the log filename
-		else if (strcmp(argv[i * 2], "-l") == 0 || strcmp(argv[i * 2], "--log_file") == 0) {
+
+
+/**
+ * Sets the log filename and checks if it is a valid filename.
+ *
+ * @param log_filename_opt		A boolean reference indicating if the log filename option has already been set.
+ * @param log_filename			A string reference to store the log filename.
+ * @param argv					A character array containing the command line arguments.
+ * @param i						The index of the current argument being processed.
+ *
+ * @return						True on success, false on error.
+ */
+bool setLogFilename(bool& log_filename_opt, std::string& log_filename, char* argv[], int i)
+{
 			// Check if option already used
 			if (log_filename_opt == true) {
 				std::cerr << "Error: multiple usage of the log filename option" << std::endl;
-				return 1;
+		return false;
 			}
+
 			// Set log filename and check if valid
 			log_filename = argv[i * 2 + 1];
 			if (!isValidFilename(log_filename)) {
 				std::cerr << "Error: invalid log filename" << std::endl;
-				return 1;
+		return false;
 			}
+
+	// Set log filename option to true indicating that this option has been set
 			log_filename_opt = true;
+
+	return true;
 		}
 		// If the option is the -r or --result_file option, set the result filename
 		else if (strcmp(argv[i * 2], "-r") == 0 || strcmp(argv[i * 2], "--result_file") == 0) {
