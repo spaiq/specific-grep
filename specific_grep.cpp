@@ -218,7 +218,6 @@ void writeLogToFile(const std::string& filename, const std::vector<std::tuple<st
 }
 
 
-
 /**
 * Print the search results to the console, including the number of searched files,
 * the number of files containing the search pattern, the number of unique pattern occurrences,
@@ -285,6 +284,7 @@ bool isValidFilename(const std::string& filename) {
 	return !std::regex_search(filename, pattern);
 }
 
+
 /**
  * Sets the starting directory for the program.
  *
@@ -297,29 +297,29 @@ bool isValidFilename(const std::string& filename) {
  */
 bool setStartingDirectory(bool& dir_opt, std::string& directory_path, char* argv[], int i)
 {
-			// Check if the directory option has already been set
-			if (dir_opt == true) {
-				std::cerr << "Error: multiple usage of the starting directory option" << std::endl;
+	// Check if the directory option has already been set
+	if (dir_opt == true) {
+		std::cerr << "Error: multiple usage of the starting directory option" << std::endl;
 		return false;
-			}
+	}
 
-			// Append the directory to the current directory path
-			directory_path = directory_path + "\\" + argv[i * 2 + 1];
+	// Append the directory to the current directory path
+	directory_path = directory_path + "\\" + argv[i * 2 + 1];
 
-			// Check if the directory exists
-			if (!fs::exists(directory_path)) {
-				if (!fs::exists(argv[i * 2 + 1])) {
-					std::cerr << "Error: directory does not exist" << std::endl;
+	// Check if the directory exists
+	if (!fs::exists(directory_path)) {
+		if (!fs::exists(argv[i * 2 + 1])) {
+			std::cerr << "Error: directory does not exist" << std::endl;
 			return false;
-				}
-				directory_path = argv[i * 2 + 1];
-			}
+		}
+		directory_path = argv[i * 2 + 1];
+	}
 
 	// Set the directory option to true indicating that this option has been set
-			dir_opt = true;
+	dir_opt = true;
 
 	return true;
-		}
+}
 
 
 /**
@@ -334,24 +334,24 @@ bool setStartingDirectory(bool& dir_opt, std::string& directory_path, char* argv
  */
 bool setLogFilename(bool& log_filename_opt, std::string& log_filename, char* argv[], int i)
 {
-			// Check if option already used
-			if (log_filename_opt == true) {
-				std::cerr << "Error: multiple usage of the log filename option" << std::endl;
+	// Check if option already used
+	if (log_filename_opt == true) {
+		std::cerr << "Error: multiple usage of the log filename option" << std::endl;
 		return false;
-			}
+	}
 
-			// Set log filename and check if valid
-			log_filename = argv[i * 2 + 1];
-			if (!isValidFilename(log_filename)) {
-				std::cerr << "Error: invalid log filename" << std::endl;
+	// Set log filename and check if valid
+	log_filename = argv[i * 2 + 1];
+	if (!isValidFilename(log_filename)) {
+		std::cerr << "Error: invalid log filename" << std::endl;
 		return false;
-			}
+	}
 
 	// Set log filename option to true indicating that this option has been set
-			log_filename_opt = true;
+	log_filename_opt = true;
 
 	return true;
-		}
+}
 
 
 /**
@@ -367,24 +367,24 @@ bool setLogFilename(bool& log_filename_opt, std::string& log_filename, char* arg
  */
 bool setResultFilename(bool& result_filename_opt, std::string& result_filename, char* argv[], int i)
 {
-			// Check if option already used
-			if (result_filename_opt == true) {
-				std::cerr << "Error: multiple usage of the result filename option" << std::endl;
+	// Check if option already used
+	if (result_filename_opt == true) {
+		std::cerr << "Error: multiple usage of the result filename option" << std::endl;
 		return false;
-			}
+	}
 
-			// Set result filename and check if valid
-			result_filename = argv[i * 2 + 1];
-			if (!isValidFilename(result_filename)) {
-				std::cerr << "Error: invalid result filename" << std::endl;
+	// Set result filename and check if valid
+	result_filename = argv[i * 2 + 1];
+	if (!isValidFilename(result_filename)) {
+		std::cerr << "Error: invalid result filename" << std::endl;
 		return false;
-			}
+	}
 
 	// Set result filename option to true indicating that this option has been set
-			result_filename_opt = true;
+	result_filename_opt = true;
 
 	return true;
-		}
+}
 
 
 /**
@@ -399,28 +399,28 @@ bool setResultFilename(bool& result_filename_opt, std::string& result_filename, 
  */
 bool setThreadCount(bool& thread_cnt_opt, int& thread_cnt, char* argv[], int i)
 {
-			// Check if option already used
-			if (thread_cnt_opt == true) {
-				std::cerr << "Error: multiple usage of the thread count option" << std::endl;
+	// Check if option already used
+	if (thread_cnt_opt == true) {
+		std::cerr << "Error: multiple usage of the thread count option" << std::endl;
 		return false;
-			}
+	}
 
-			// Set thread count and catch invalid argument
-			try {
-				thread_cnt = std::stoi(argv[i * 2 + 1]);
-			}
-			catch (const std::invalid_argument& e) {
-				std::cerr << "Error: invalid thread count" << std::endl;
+	// Set thread count and catch invalid argument
+	try {
+		thread_cnt = std::stoi(argv[i * 2 + 1]);
+	}
+	catch (const std::invalid_argument& e) {
+		std::cerr << "Error: invalid thread count" << std::endl;
 		return false;
-			}
+	}
 
-			// Check if thread count is valid
-			if (thread_cnt < 1) {
-				std::cerr << "Error: invalid thread count" << std::endl;
-				return 1;
-			}
+	// Check if thread count is valid
+	if (thread_cnt < 1) {
+		std::cerr << "Error: invalid thread count" << std::endl;
+		return 1;
+	}
 
-			thread_cnt_opt = true;
+	thread_cnt_opt = true;
 
 	return true;
 }
