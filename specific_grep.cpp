@@ -288,12 +288,12 @@ bool isValidFilename(const std::string& filename) {
 /**
  * Sets the starting directory for the program.
  *
- * @param dir_opt         A reference to a boolean that tracks whether the directory option has already been set.
- * @param directory_path  A reference to a string that stores the path of the starting directory.
- * @param argv            The command line arguments.
- * @param i               The index of the current option.
+ * @param dir_opt		A reference to a boolean that tracks whether the directory option has already been set.
+ * @param directory_path		A reference to a string that stores the path of the starting directory.
+ * @param argv		The command line arguments.
+ * @param i		The index of the current option.
  *
- * @return                True on success, false on error.
+ * @return		True on success, false on error.
  */
 bool setStartingDirectory(bool& dir_opt, std::string& directory_path, char* argv[], int i)
 {
@@ -326,11 +326,11 @@ bool setStartingDirectory(bool& dir_opt, std::string& directory_path, char* argv
  * Sets the log filename and checks if it is a valid filename.
  *
  * @param log_filename_opt		A boolean reference indicating if the log filename option has already been set.
- * @param log_filename			A string reference to store the log filename.
- * @param argv					A character array containing the command line arguments.
- * @param i						The index of the current argument being processed.
+ * @param log_filename		A string reference to store the log filename.
+ * @param argv		A character array containing the command line arguments.
+ * @param i		The index of the current argument being processed.
  *
- * @return						True on success, false on error.
+ * @return		True on success, false on error.
  */
 bool setLogFilename(bool& log_filename_opt, std::string& log_filename, char* argv[], int i)
 {
@@ -359,11 +359,11 @@ bool setLogFilename(bool& log_filename_opt, std::string& log_filename, char* arg
  * and if the filename is valid.
  *
  * @param result_filename_opt		A boolean flag to indicate if the result filename option has been set.
- * @param result_filename			A reference to the string that will hold the result filename.
- * @param argv						The command line arguments.
- * @param i							The index of the current argument being processed.
+ * @param result_filename		A reference to the string that will hold the result filename.
+ * @param argv		The command line arguments.
+ * @param i		The index of the current argument being processed.
  *
- * @return							True on success, false on error.
+ * @return		True on success, false on error.
  */
 bool setResultFilename(bool& result_filename_opt, std::string& result_filename, char* argv[], int i)
 {
@@ -390,12 +390,12 @@ bool setResultFilename(bool& result_filename_opt, std::string& result_filename, 
 /**
  * Sets the number of threads to be used in the program.
  *
- * @param thread_cnt_opt			A boolean flag indicating whether the thread count option has already been set.
- * @param thread_cnt				An integer indicating the number of threads to be used in the program.
- * @param argv						The command-line arguments.
- * @param i							The index of the current argument being processed.
+ * @param thread_cnt_opt		A boolean flag indicating whether the thread count option has already been set.
+ * @param thread_cnt		An integer indicating the number of threads to be used in the program.
+ * @param argv		The command-line arguments.
+ * @param i		The index of the current argument being processed.
  *
- * @return							True on success, false on error.
+ * @return		True on success, false on error.
  */
 bool setThreadCount(bool& thread_cnt_opt, int& thread_cnt, char* argv[], int i)
 {
@@ -429,15 +429,15 @@ bool setThreadCount(bool& thread_cnt_opt, int& thread_cnt, char* argv[], int i)
 /**
  * Sets additional options for the program based on the provided command line arguments.
  *
- * @param argc              The number of command line arguments.
- * @param filename          The name of the program.
- * @param argv              An array of the command line arguments.
- * @param directory_path    The directory to search in.
- * @param log_filename      The name of the log file.
- * @param result_filename   The name of the result file.
- * @param thread_cnt        The number of threads to use.
+ * @param argc		The number of command line arguments.
+ * @param filename		The name of the program.
+ * @param argv		An array of the command line arguments.
+ * @param directory_path		The directory to search in.
+ * @param log_filename		The name of the log file.
+ * @param result_filename		The name of the result file.
+ * @param thread_cnt		The number of threads to use.
  *
- * @return                  True on success, false on error.
+ * @return		True on success, false on error.
  */
 bool setAdditionalOptions(int argc, std::string& filename, char* argv[], std::string& directory_path, std::string& log_filename, std::string& result_filename, int& thread_cnt)
 {
