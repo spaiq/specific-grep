@@ -352,20 +352,38 @@ bool setLogFilename(bool& log_filename_opt, std::string& log_filename, char* arg
 
 	return true;
 		}
-		// If the option is the -r or --result_file option, set the result filename
-		else if (strcmp(argv[i * 2], "-r") == 0 || strcmp(argv[i * 2], "--result_file") == 0) {
+
+
+/**
+ * Sets the result filename option and checks if the option has already been set
+ * and if the filename is valid.
+ *
+ * @param result_filename_opt		A boolean flag to indicate if the result filename option has been set.
+ * @param result_filename			A reference to the string that will hold the result filename.
+ * @param argv						The command line arguments.
+ * @param i							The index of the current argument being processed.
+ *
+ * @return							True on success, false on error.
+ */
+bool setResultFilename(bool& result_filename_opt, std::string& result_filename, char* argv[], int i)
+{
 			// Check if option already used
 			if (result_filename_opt == true) {
 				std::cerr << "Error: multiple usage of the result filename option" << std::endl;
-				return 1;
+		return false;
 			}
+
 			// Set result filename and check if valid
 			result_filename = argv[i * 2 + 1];
 			if (!isValidFilename(result_filename)) {
 				std::cerr << "Error: invalid result filename" << std::endl;
-				return 1;
+		return false;
 			}
+
+	// Set result filename option to true indicating that this option has been set
 			result_filename_opt = true;
+
+	return true;
 		}
 		// If the option is the -t or --threads option, set the threads count
 		else if (strcmp(argv[i * 2], "-t") == 0 || strcmp(argv[i * 2], "--threads") == 0) {
