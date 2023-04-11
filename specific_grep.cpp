@@ -285,67 +285,40 @@ bool isValidFilename(const std::string& filename) {
 	return !std::regex_search(filename, pattern);
 }
 
-
-int main(int argc, char* argv[]) {
-	// Initialize the timer
-	int timer_start;
-
-	// Start the timer
-	timer_start = clock();
-
-	// Extract the filename from the first argument
-	std::string filename = fs::path(argv[0]).filename().string();
-
-	// If no arguments are given or the number of arguments is invalid, print an error message and exit
-	if (argc == 1) {
-		std::cerr << "Error: wrong usage of the program\n"
-			<< "Usage: " << filename << " <search string> [options]\n"
-			<< "Options:\n"
-			<< "  -d <directory> - directory to search in (default: current directory)\n"
-			<< "  -l <log filename> - log filename (default: <program name>.log)\n"
-			<< "  -r <result filename> - result filename (default: <program name>.txt)\n"
-			<< "  -t <thread count> - number of threads to use (default: 4)\n";
-		return 1;
-	}
-
-	if (!(argc % 2 == 0) || argc > 10) {
-		std::cerr << "Error: wrong number of arguments" << std::endl;
-		return 1;
-	}
-
-	// Set default values for directory path, log filename, result filename, and thread count
-	std::string directory_path = fs::current_path().string();
-	std::string search_string = argv[1];
-	int additional_options_cnt = (argc - 2) / 2, thread_cnt = 4;
-	bool dir_opt = false, log_filename_opt = false, result_filename_opt = false, thread_cnt_opt = false;
-
-	// Extract the program name from the filename
-	std::size_t last_dot = filename.find_last_of(".");
-	std::string program_name = filename.substr(0, last_dot);
-	std::string log_filename = program_name;
-	std::string result_filename = program_name;
-
-	// Loop through the additional options
-	for (int i = 1; i <= additional_options_cnt; i++) {
-		// If the option is the -d or --dir option, set the directory path
-		if (strcmp(argv[i * 2], "-d") == 0 || strcmp(argv[i * 2], "--dir") == 0) {
+/**
+ * Sets the starting directory for the program.
+ *
+ * @param dir_opt         A reference to a boolean that tracks whether the directory option has already been set.
+ * @param directory_path  A reference to a string that stores the path of the starting directory.
+ * @param argv            The command line arguments.
+ * @param i               The index of the current option.
+ *
+ * @return                True on success, false on error.
+ */
+bool setStartingDirectory(bool& dir_opt, std::string& directory_path, char* argv[], int i)
+{
 			// Check if the directory option has already been set
 			if (dir_opt == true) {
 				std::cerr << "Error: multiple usage of the starting directory option" << std::endl;
-				return 1;
+		return false;
 			}
+
 			// Append the directory to the current directory path
 			directory_path = directory_path + "\\" + argv[i * 2 + 1];
+
 			// Check if the directory exists
 			if (!fs::exists(directory_path)) {
 				if (!fs::exists(argv[i * 2 + 1])) {
 					std::cerr << "Error: directory does not exist" << std::endl;
-					return 1;
+			return false;
 				}
 				directory_path = argv[i * 2 + 1];
 			}
-			// Set the directory option to true
+
+	// Set the directory option to true indicating that this option has been set
 			dir_opt = true;
+
+	return true;
 		}
 		// If the option is the -l or --log_file option, set the log filename
 		else if (strcmp(argv[i * 2], "-l") == 0 || strcmp(argv[i * 2], "--log_file") == 0) {
