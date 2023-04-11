@@ -385,20 +385,33 @@ bool setResultFilename(bool& result_filename_opt, std::string& result_filename, 
 
 	return true;
 		}
-		// If the option is the -t or --threads option, set the threads count
-		else if (strcmp(argv[i * 2], "-t") == 0 || strcmp(argv[i * 2], "--threads") == 0) {
+
+
+/**
+ * Sets the number of threads to be used in the program.
+ *
+ * @param thread_cnt_opt			A boolean flag indicating whether the thread count option has already been set.
+ * @param thread_cnt				An integer indicating the number of threads to be used in the program.
+ * @param argv						The command-line arguments.
+ * @param i							The index of the current argument being processed.
+ *
+ * @return							True on success, false on error.
+ */
+bool setThreadCount(bool& thread_cnt_opt, int& thread_cnt, char* argv[], int i)
+{
 			// Check if option already used
 			if (thread_cnt_opt == true) {
 				std::cerr << "Error: multiple usage of the thread count option" << std::endl;
-				return 1;
+		return false;
 			}
+
 			// Set thread count and catch invalid argument
 			try {
 				thread_cnt = std::stoi(argv[i * 2 + 1]);
 			}
 			catch (const std::invalid_argument& e) {
 				std::cerr << "Error: invalid thread count" << std::endl;
-				return 1;
+		return false;
 			}
 
 			// Check if thread count is valid
@@ -408,6 +421,9 @@ bool setResultFilename(bool& result_filename_opt, std::string& result_filename, 
 			}
 
 			thread_cnt_opt = true;
+
+	return true;
+}
 		}
 		// If option not recognized, print error message
 		else {
