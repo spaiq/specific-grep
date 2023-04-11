@@ -32,24 +32,25 @@ std::vector<std::tuple<std::thread::id, std::string, int, std::string>> searchFi
 		// Open the file for reading
 		std::ifstream file(file_path);
 
-		// If the file was successfully opened, read each line and search for the string
-		if (file.good()) {
-			std::string line;
-			int line_number = 0;
-			while (std::getline(file, line)) {
-				++line_number;
-				if (line.find(search_string) != std::string::npos) {
-					// If the string was found, add the search results to the vector
-					results.emplace_back(thread_id, file_path.filename().stem().string(), line_number, line);
-				}
-			}
-			file.close();
-		}
 		// If the file could not be opened, output an error message
-		else {
+		if (!file.good()) {
 			std::cerr << "Error: could not open file " << file_path.string() << " due to permission issues." << std::endl;
+			continue;
 		}
+
+		// If the file was successfully opened, read each line and search for the string
+		std::string line;
+		int line_number = 0;
+		while (std::getline(file, line)) {
+			++line_number;
+			if (line.find(search_string) != std::string::npos) {
+				// If the string was found, add the search results to the vector
+				results.emplace_back(thread_id, file_path.filename().stem().string(), line_number, line);
+			}
+		}
+		file.close();
 	}
+
 	// Add entry for thread id storage if there was no file with the string in files subset
 	if (results.empty()) {
 		results.emplace_back(thread_id, "", NULL, "");
