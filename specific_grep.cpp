@@ -501,6 +501,37 @@ bool setAdditionalOptions(int argc, std::string& filename, char* argv[], std::st
 
 	return true;
 }
+
+
+int main(int argc, char* argv[]) {
+	// Initialize the timer
+	int timer_start;
+
+	// Start the timer
+	timer_start = clock();
+
+	// Extract the filename from the first argument
+	std::string filename = fs::path(argv[0]).filename().string();
+	// Extract the string to search for from the second argument
+	std::string search_string = argv[1];
+	// Initialize the directory path to the current directory
+	std::string directory_path = fs::current_path().string();
+
+	// Set default values for log filename, result filename, and thread count
+	int thread_cnt = 4;
+
+	// Extract the program name from the filename
+	std::size_t last_dot = filename.find_last_of(".");
+	std::string program_name = filename.substr(0, last_dot);
+	std::string log_filename = program_name;
+	std::string result_filename = program_name;
+
+	// Parse the additional options using the setAdditionalOptions function
+	int options_func_success = setAdditionalOptions(argc, filename, argv, directory_path, log_filename, result_filename, thread_cnt);
+
+	// If any of the additional options is invalid, return false
+	if (!options_func_success) return 1;
+
 	// Search directory for string with specified thread count
 	std::pair<std::vector<std::tuple<std::thread::id, std::string, int, std::string>>, int> results = searchDirectoryForString(search_string, directory_path, thread_cnt);
 
